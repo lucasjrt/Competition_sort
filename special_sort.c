@@ -43,7 +43,7 @@ int binCompare(const char *s1, const char *s2){
         }
         return 0;
     }
-
+	return 0;
 }
 
 void mergeInt(int *v, unsigned int inicio, unsigned int fim){
@@ -187,27 +187,20 @@ int main() {
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
             cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             while(scanf("%s", cinput[n]) != EOF) {
+                caux[n] = (char*) malloc(COLS_SIZE * sizeof(char));
                 n++;
                 cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
-                caux[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             }
-            printf("Recebeu:\n");
-            for(int i=0;i<n;i++)
-                printf("%s\n",cinput[i]);
-            printf("fim\n");
             mergeString(cinput, n);
-            printf("Ordenou para:\n\n");
-            for(int i=0;i<n;i++)
-                printf("%s\n",cinput[i]);
-            printf("fim\n");
-        } else if(ehBin(caux[n])) {
+        } else if(ehBin(cinput[n])) {
 			printf("Binario reconhecido\n");
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
             cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             while(scanf("%s", cinput[n]) != EOF) {
-                cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
                 caux[n] = (char*) malloc(COLS_SIZE * sizeof(char));
+                n++;
+                cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             }
             binMerge(cinput,0, n-1);
         } else {
@@ -223,7 +216,7 @@ int main() {
             }
         }
     }
-    for(i = 0; i <= n; i++) {
+    for(i = 0; i < n; i++) {
        printf("%s\n", cinput[i]);
     }
     if(caux != NULL)
