@@ -199,7 +199,7 @@ int main() {
                 cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
                 caux[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             }
-            //mergeBin(cinput, n);
+            binMerge(cinput,0, n-1);
         } else {
             iinput = (int*) malloc(ROWS_SIZE * sizeof(int));
             iinput[n] = atoi(cinput[n]);
