@@ -5,21 +5,84 @@
 #define ROWS_SIZE 100000
 
 char **caux;
-int *cint;
+int *bInt;
+int *cInt;
+
+int binCompare(const char *s1, const char *s2){
+    int size_s1 = strlen(s1), size_s2 = strlen(s2);
+    int diferenca = size_s1 - size_s2;
+    if(diferenca<=0){ //s2 maior
+        for(int i=0; i<(-diferenca);i++){
+            if(s2[i]>'0')
+                return -1;
+        }
+        for(int i = (-diferenca), j=0; i<size_s2; i++,j++){
+            if(s1[j]<s2[i])
+                return -1;
+            else{
+                if(s1[j]>s2[i])
+                    return 1;
+            }
+        }
+        return 0;
+    }
+    if(diferenca>=0){ //s1 maior
+        for(int i=0; i<diferenca; i++){
+            if(s1[i]>'0')
+                return 1;
+        }
+
+        for(int i = diferenca, j=0; i<size_s1; i++,j++){
+            if(s1[i]>s2[j])
+                return 1;
+            else{
+                if(s1[i]<s2[j])
+                    return -1;
+            }
+        }
+        return 0;
+    }
+
+}
+
+void mergeInt(int *v, unsigned int inicio, unsigned int fim){
+    if(inicio>=fim)
+        return;
+    unsigned int meio = inicio + (fim-inicio)/2;
+    mergeInt(v, inicio, meio);
+    mergeInt(v, meio+1, fim);
+    unsigned int k;
+
+    for(k=inicio; k<=meio; k++)
+        bInt[k-inicio] = v[k];
+    for(k=meio+1; k<=fim; k++)
+        cInt[k-meio-1] = v[k];
+    bInt[meio-inicio+1] = MAX_INT;
+    cInt[fim-(meio+1)+1] = MAX_INT;
+
+    int i=0, j=0;
+    for(k=inicio; k<=fim; k++){
+        if(bInt[i]<cInt[j])
+            v[k] = bInt[i++];
+        else
+            v[k] = cInt[j++];
+    }
+}
+
 
 void stringMerge(char **v, int inicio, int fim) {
     int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
     int i, j;
     for(i = 0; i < tamanho; i++) {
         if(!flag1 && !flag2) {
-            if(strcmp(v[v1], v[v2]) < 0) 
+            if(strcmp(v[v1], v[v2]) < 0)
                 strcpy(aux[i], v[v1++]);
             else
                 strcpy(aux[i], v[v2++]);
         } else {
             if(!flag1)
                 strcpy(aux[i], v[v1++]);
-            else 
+            else
                 strcpy(aux[i], v[v2++]);
         }
         if(v1 > meio) flag1 = 1;
@@ -56,7 +119,7 @@ void lenMerge(char **v, int inicio, int fim) {
         } else {
             if(!flag1)
                 strcpy(aux[i], v[v1++]);
-            else 
+            else
                 strcpy(aux[i], v[v2++]);
         }
         if(v1 > meio) flag1 = 1;
@@ -127,7 +190,7 @@ int main() {
         }
     }
     for(i = 0; i <= n; i++) {
-       printf("%s\n", cinput[i]); 
+       printf("%s\n", cinput[i]);
     }
     free(aux);
     free(cinput);
