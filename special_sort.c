@@ -53,7 +53,6 @@ void mergeInt(int *v, unsigned int inicio, unsigned int fim){
     mergeInt(v, inicio, meio);
     mergeInt(v, meio+1, fim);
     unsigned int k;
-
     for(k=inicio; k<=meio; k++)
         bInt[k-inicio] = v[k];
     for(k=meio+1; k<=fim; k++)
@@ -61,55 +60,84 @@ void mergeInt(int *v, unsigned int inicio, unsigned int fim){
     bInt[meio-inicio+1] = MAX_INT;
     cInt[fim-(meio+1)+1] = MAX_INT;
 
-    int i=0, j=0;
-    for(k=inicio; k<=fim; k++){
-        if(bInt[i]<cInt[j])
-            v[k] = bInt[i++];
-        else
-            v[k] = cInt[j++];
-    }
+    int i=0, j=0, x;
+	for(x = inicio; x < fim; x++) {
+		for(k=inicio; k<=fim; k++){
+			if(bInt[i]<cInt[j])
+				v[k] = bInt[i++];
+			else
+				v[k] = cInt[j++];
+		}
+		i = 0;
+		j = 0;
+	}
 }
 
-void binMerge(char **v, int inicio, int fim) {
+void _binMerge(char **v, int inicio, int fim) {
     int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
     int i, j;
-    for(i = 0; i < tamanho; i++) {
-        if(!flag1 && !flag2) {
-            if(binCompare(v[v1], v[v2]) < 0)
-                strcpy(caux[i], v[v1++]);
-            else
-                strcpy(caux[i], v[v2++]);
-        } else {
-            if(!flag1)
-                strcpy(caux[i], v[v1++]);
-            else
-                strcpy(caux[i], v[v2++]);
-        }
-        if(v1 > meio) flag1 = 1;
-        if(v2 > fim)  flag2 = 1;
-    }
+	for(j = 0; j < tamanho; j++) {
+		for(i = 0; i < tamanho; i++) {
+			if(!flag1 && !flag2) {
+				if(binCompare(v[v1], v[v2]) < 0)
+					strcpy(caux[i], v[v1++]);
+				else 
+					strcpy(caux[i], v[v2++]);
+			} else {
+				if(!flag1)
+					strcpy(caux[i], v[v1++]);
+				else
+					strcpy(caux[i], v[v2++]);
+			}
+			if(v1 > meio) flag1 = 1;
+			if(v2 > fim)  flag2 = 1;
+		}
+		v1 = inicio;
+		v2 = meio + 1;
+		flag1 = 0;
+		flag2 = 0;
+	}
     for(i = 0, j = inicio; j < fim + 1; i++, j++) {
         strcpy(v[j], caux[i]);
     }
 }
 
-void stringMerge(char **v, int inicio, int fim) {
+void _mergeBin(char **v, int inicio, int fim) {
+    if(inicio < fim) {
+        int meio = inicio + ((fim - inicio) >> 1);
+        _mergeBin(v, inicio, meio);
+        _mergeBin(v, meio + 1, fim);
+        _binMerge(v, inicio, fim);
+    }
+}
+
+void mergeBin(char **v, int n) {
+	_mergeBin(v, 0, n - 1);
+}
+
+void _stringMerge(char **v, int inicio, int fim) {
     int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
     int i, j;
     for(i = 0; i < tamanho; i++) {
-        if(!flag1 && !flag2) {
-            if(strcmp(v[v1], v[v2]) < 0)
-                strcpy(caux[i], v[v1++]);
-            else
-                strcpy(caux[i], v[v2++]);
-        } else {
-            if(!flag1)
-                strcpy(caux[i], v[v1++]);
-            else
-                strcpy(caux[i], v[v2++]);
-        }
-        if(v1 > meio) flag1 = 1;
-        if(v2 > fim)  flag2 = 1;
+		for (j = 0; j < tamanho; j++) {
+			if(!flag1 && !flag2) {
+				if(strcmp(v[v1], v[v2]) < 0)
+					strcpy(caux[j], v[v1++]);
+				else
+					strcpy(caux[j], v[v2++]);
+			} else {
+				if(!flag1)
+					strcpy(caux[j], v[v1++]);
+				else
+					strcpy(caux[j], v[v2++]);
+			}
+			if(v1 > meio) flag1 = 1;
+			if(v2 > fim)  flag2 = 1;
+		}
+		v1 = inicio;
+		v2 = meio + 1;
+		flag1 = 0;
+		flag2 = 0;
     }
     for(i = 0, j = inicio; j < fim + 1; i++, j++) {
         strcpy(v[j], caux[i]);
@@ -121,49 +149,12 @@ void _mergeString(char **v, int inicio, int fim) {
         int meio = inicio + ((fim - inicio) >> 1);
         _mergeString(v, inicio, meio);
         _mergeString(v, meio + 1, fim);
-        stringMerge(v, inicio, fim);
+        _stringMerge(v, inicio, fim);
     }
-
 }
 
 void mergeString(char **v, int n) {
     _mergeString(v, 0, n-1);
-}
-
-void mergeLen(char **v, int inicio, int fim) {
-    int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
-    int i, j;
-    for(i = 0; i < tamanho; i++) {
-        if(!flag1 && !flag2) {
-            if(strlen(v[v1]) < strlen(v[v2]))
-                strcpy(caux[i], v[v1++]);
-            else
-                strcpy(caux[i], v[v2++]);
-        } else {
-            if(!flag1)
-                strcpy(caux[i], v[v1++]);
-            else
-                strcpy(caux[i], v[v2++]);
-        }
-        if(v1 > meio) flag1 = 1;
-        if(v2 > fim)  flag2 = 1;
-    }
-    for(i = 0, j = inicio; j < fim + 1; i++, j++) {
-        strcpy(v[j], caux[i]);
-    }
-}
-
-void _lenMerge(char **v, int inicio, int fim) {
-    if(inicio < fim) {
-        int meio = inicio + ((fim - inicio) >> 1);
-        _lenMerge(v, inicio, meio);
-        _lenMerge(v, meio + 1, fim);
-        mergeLen(v, inicio, fim);
-    }
-}
-
-void lenMerge(char **v, int n) {
-    _lenMerge(v, 0, n - 1);
 }
 
 int ehBin(char *v) {
@@ -182,7 +173,6 @@ int main() {
     cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
     if(scanf("%s", cinput[n]) != EOF) { //TODO: Alterar esse if para dentro dos whiles
         if(cinput[n][0] < '0' || cinput[n][0] > '9') {
-			printf("String reconhecido\n");
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
             cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
@@ -193,7 +183,6 @@ int main() {
             }
             mergeString(cinput, n);
         } else if(ehBin(cinput[n])) {
-			printf("Binario reconhecido\n");
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
             cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
@@ -202,23 +191,27 @@ int main() {
                 n++;
                 cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             }
-            binMerge(cinput,0, n-1);
+            mergeBin(cinput,n);
         } else {
-			printf("Inteiro reconhecido\n");
             iinput = (int*) malloc(ROWS_SIZE * sizeof(int));
-            iinput[n] = atoi(cinput[n]);
             bInt = (int*) malloc((ROWS_SIZE>>2)+1 * sizeof(int));
             cInt = (int*) malloc(ROWS_SIZE>>2 * sizeof(int));
+            iinput[n] = atoi(cinput[n]);
             n++;
-            while(scanf("%s", cinput[n]) != EOF) {
+            while(scanf("%d", &iinput[n]) != EOF) {
                 n++;
-                iinput[n] = atoi(cinput[n]);
             }
+			mergeInt(iinput, 0, n - 1);
         }
     }
-    for(i = 0; i < n; i++) {
-       printf("%s\n", cinput[i]);
-    }
+
+	if(caux != NULL)
+		for(i = 0; i < n; i++)
+			printf("%s\n", cinput[i]);
+	else
+		for(i = 0; i < n; i++)
+			printf("%d\n", iinput[i]);
+
     if(caux != NULL)
     	free(caux);
 	else{
