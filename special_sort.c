@@ -139,7 +139,7 @@ void _lenMerge(char **v, int inicio, int fim) {
 }
 
 void lenMerge(char **v, int n) {
-    _lenMerge(v, 0, n);
+    _lenMerge(v, 0, n - 1);
 }
 
 int ehBin(char *v) {
