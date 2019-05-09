@@ -3,6 +3,7 @@
 #include <string.h>
 #define COLS_SIZE 250
 #define ROWS_SIZE 100000
+#define MAX_INT 2147483647
 
 char **caux;
 int *bInt;
@@ -69,19 +70,42 @@ void mergeInt(int *v, unsigned int inicio, unsigned int fim){
     }
 }
 
-void stringMerge(char **v, int inicio, int fim) {
+void binMerge(char **v, int inicio, int fim) {
     int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
     int i, j;
     for(i = 0; i < tamanho; i++) {
         if(!flag1 && !flag2) {
-            if(strcmp(v[v1], v[v2]) < 0) 
+            if(binCompare(v[v1], v[v2]) < 0)
                 strcpy(caux[i], v[v1++]);
             else
                 strcpy(caux[i], v[v2++]);
         } else {
             if(!flag1)
                 strcpy(caux[i], v[v1++]);
-            else 
+            else
+                strcpy(caux[i], v[v2++]);
+        }
+        if(v1 > meio) flag1 = 1;
+        if(v2 > fim)  flag2 = 1;
+    }
+    for(i = 0, j = inicio; j < fim + 1; i++, j++) {
+        strcpy(v[j], caux[i]);
+    }
+}
+
+void stringMerge(char **v, int inicio, int fim) {
+    int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
+    int i, j;
+    for(i = 0; i < tamanho; i++) {
+        if(!flag1 && !flag2) {
+            if(strcmp(v[v1], v[v2]) < 0)
+                strcpy(caux[i], v[v1++]);
+            else
+                strcpy(caux[i], v[v2++]);
+        } else {
+            if(!flag1)
+                strcpy(caux[i], v[v1++]);
+            else
                 strcpy(caux[i], v[v2++]);
         }
         if(v1 > meio) flag1 = 1;
@@ -118,7 +142,7 @@ void mergeLen(char **v, int inicio, int fim) {
         } else {
             if(!flag1)
                 strcpy(caux[i], v[v1++]);
-            else 
+            else
                 strcpy(caux[i], v[v2++]);
         }
         if(v1 > meio) flag1 = 1;
@@ -156,8 +180,7 @@ int main() {
     int *iinput;
     char **cinput = (char**) malloc(ROWS_SIZE * sizeof(char*));
     cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
-    i = scanf("%s", cinput[n]);
-    if(i != EOF) { //TODO: Alterar esse if para dentro dos whiles
+    if(scanf("%s", cinput[n]) != EOF) { //TODO: Alterar esse if para dentro dos whiles
         if(cinput[n][0] < '0' || cinput[n][0] > '9') {
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
@@ -180,7 +203,8 @@ int main() {
         } else {
             iinput = (int*) malloc(ROWS_SIZE * sizeof(int));
             iinput[n] = atoi(cinput[n]);
-            iaux = (int*) malloc(ROWS_SIZE * sizeof(int));
+            bInt = (int*) malloc((ROWS_SIZE>>2)+1 * sizeof(int));
+            cInt = (int*) malloc(ROWS_SIZE>>2 * sizeof(int));
             n++;
             while(scanf("%s", cinput[n]) != EOF) {
                 n++;
@@ -193,8 +217,10 @@ int main() {
     }
     if(caux != NULL)
     	free(caux);
-	else
-		free(iaux);
+	else{
+		free(bInt);
+		free(cInt);
+	}
     free(cinput);
     return 0;
 }
