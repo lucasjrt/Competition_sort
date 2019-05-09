@@ -186,11 +186,19 @@ int main() {
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
             cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             while(scanf("%s", cinput[n]) != EOF) {
+                n++;
                 cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
                 caux[n] = (char*) malloc(COLS_SIZE * sizeof(char));
-                n++;
             }
+            printf("Recebeu:\n");
+            for(int i=0;i<n;i++)
+                printf("%s\n",cinput[i]);
+            printf("fim\n");
             mergeString(cinput, n);
+            printf("Ordenou para:\n\n");
+            for(int i=0;i<n;i++)
+                printf("%s\n",cinput[i]);
+            printf("fim\n");
         } else if(ehBin(caux[n])) {
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
