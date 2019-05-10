@@ -159,7 +159,6 @@ void mergeString(char **v, int n) {
 
 int ehBin(char *v) {
     int i;
-
     for(i = 0; i < strlen(v); i++)
         if(v[i] != '1' && v[i] != '0')
             return 0;
@@ -172,6 +171,7 @@ int main() {
     char **cinput = (char**) malloc(ROWS_SIZE * sizeof(char*));
     cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
     if(scanf("%s", cinput[n]) != EOF) { //TODO: Alterar esse if para dentro dos whiles
+
         if(cinput[n][0] < '0' || cinput[n][0] > '9') {
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
