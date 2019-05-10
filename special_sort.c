@@ -45,46 +45,6 @@ int binCompare(const char *s1, const char *s2){
     }
 	return 0;
 }
-
-void _mergeInt(int *v, unsigned int inicio, unsigned int fim){
-    int aux;
-    if(inicio>=fim)
-        return;
-
-    for(int i=0;i<fim-inicio+1;i++){ //Bubble sort, faz (n^2 -n) comparacoes
-        for(int j=0;j<fim-inicio;j++){
-            if(v[j]>v[j+1]){
-                aux = v[j];
-                v[j] = v[j+1];
-                v[j+1] = aux;
-            }
-        }
-    }
-
-    unsigned int meio = inicio + (fim-inicio)/2;
-    _mergeInt(v, inicio, meio);
-    _mergeInt(v, meio+1, fim);
-    unsigned int k;
-    for(k=inicio; k<=meio; k++)
-        bInt[k-inicio] = v[k];
-    for(k=meio+1; k<=fim; k++)
-        cInt[k-meio-1] = v[k];
-    bInt[meio-inicio+1] = MAX_INT;
-    cInt[fim-(meio+1)+1] = MAX_INT;
-
-    int i=0, j=0;
-    for(k=inicio; k<=fim; k++){
-        if(bInt[i]<cInt[j])
-            v[k] = bInt[i++];
-        else
-            v[k] = cInt[j++];
-    }
-}
-
-void mergeInt(int *v, unsigned int inicio, unsigned int fim){
-    _mergeInt(v, inicio, fim);
-    _mergeInt(v, inicio, fim);
-}
 void _binMerge(char **v, int inicio, int fim) {
     int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
     int i, j;
@@ -113,47 +73,51 @@ void _mergeBin(char **v, int inicio, int fim) {
         int meio = inicio + ((fim - inicio) >> 1);
         _mergeBin(v, inicio, meio);
         _mergeBin(v, meio + 1, fim);
+        _mergeBin(v, inicio, meio);
+        _mergeBin(v, meio + 1, fim);
         _binMerge(v, inicio, fim);
     }
 }
 
 void mergeBin(char **v, int n) {
 	_mergeBin(v, 0, n - 1);
-	_mergeBin(v, 0, n - 1);
 }
 
-void _stringMerge(char **v, int inicio, int fim) {
-    int v1 = inicio, meio = inicio + ((fim - inicio) >> 1), v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
-    int i, j;
 
-    for(int i=0;i<tamanho;i++){ //Bubble sort, faz (n^2 -n) comparacoes
-        for(int j=0;j<(tamanho-1);j++){
-            if(strcmp(v[j],v[j+1])>0){
-                strcpy(caux[0], v[j]);
-                strcpy(v[j], v[j+1]);
-                strcpy(v[j+1],caux[0]);
+void mergeInt(int *v, unsigned int inicio, unsigned int fim){
+    int aux;
+    if(inicio>=fim)
+        return;
+
+    for(int i=0;i<fim-inicio+1;i++){ //Bubble sort, faz (n^2 -n) comparacoes
+        for(int j=0;j<fim-inicio;j++){
+            if(v[j]>v[j+1]){
+                aux = v[j];
+                v[j] = v[j+1];
+                v[j+1] = aux;
             }
         }
     }
 
-    for (j = 0; j < tamanho; j++) {
-        if(!flag1 && !flag2) {
-            if(strcmp(v[v1], v[v2]) < 0) //Sao feitos n dessas comparacoes em cada chamada
-                strcpy(caux[j], v[v1++]);
-            else
-                strcpy(caux[j], v[v2++]);
-        } else {
-            if(!flag1)
-                strcpy(caux[j], v[v1++]);
-            else
-                strcpy(caux[j], v[v2++]);
-        }
-        if(v1 > meio) flag1 = 1;
-        if(v2 > fim)  flag2 = 1;
-    }
+    unsigned int meio = inicio + (fim-inicio)/2;
+    mergeInt(v, inicio, meio);
+    mergeInt(v, meio+1, fim);
+    mergeInt(v, inicio, meio);
+    mergeInt(v, meio+1, fim);
+    unsigned int k;
+    for(k=inicio; k<=meio; k++)
+        bInt[k-inicio] = v[k];
+    for(k=meio+1; k<=fim; k++)
+        cInt[k-meio-1] = v[k];
+    bInt[meio-inicio+1] = MAX_INT;
+    cInt[fim-(meio+1)+1] = MAX_INT;
 
-    for(i = 0, j = inicio; j < fim + 1; i++, j++) {
-        strcpy(v[j], caux[i]);
+    int i=0, j=0;
+    for(k=inicio; k<=fim; k++){
+        if(bInt[i]<cInt[j])
+            v[k] = bInt[i++];
+        else
+            v[k] = cInt[j++];
     }
 }
 
@@ -162,12 +126,44 @@ void _mergeString(char **v, int inicio, int fim) {
         int meio = inicio + ((fim - inicio) >> 1);
         _mergeString(v, inicio, meio);
         _mergeString(v, meio + 1, fim);
-        _stringMerge(v, inicio, fim);
+        _mergeString(v, inicio, meio);
+        _mergeString(v, meio + 1, fim);
+        int v1 = inicio, v2 = meio + 1, tamanho = fim - inicio + 1, flag1 = 0, flag2 = 0;
+        int i, j;
+
+        for(int i=0;i<tamanho;i++){ //Bubble sort, faz (n^2 -n) comparacoes
+            for(int j=0;j<(tamanho-1);j++){
+                if(strcmp(v[j],v[j+1])>0){
+                    strcpy(caux[0], v[j]);
+                    strcpy(v[j], v[j+1]);
+                    strcpy(v[j+1],caux[0]);
+                }
+            }
+        }
+
+        for (j = 0; j < tamanho; j++) {
+            if(!flag1 && !flag2) {
+                if(strcmp(v[v1], v[v2]) < 0) //Sao feitos n dessas comparacoes em cada chamada
+                    strcpy(caux[j], v[v1++]);
+                else
+                    strcpy(caux[j], v[v2++]);
+            } else {
+                if(!flag1)
+                    strcpy(caux[j], v[v1++]);
+                else
+                    strcpy(caux[j], v[v2++]);
+            }
+            if(v1 > meio) flag1 = 1;
+            if(v2 > fim)  flag2 = 1;
+        }
+
+        for(i = 0, j = inicio; j < fim + 1; i++, j++) {
+            strcpy(v[j], caux[i]);
+        }
     }
 }
 
 void mergeString(char **v, int n) {
-    _mergeString(v, 0, n-1);
     _mergeString(v, 0, n-1);
 }
 
@@ -196,7 +192,7 @@ int main() {
                 cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             }
             mergeString(cinput, n);
-        } else if(ehBin(cinput[n])) {
+        } /*else if(ehBin(cinput[n])) {
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
             cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
@@ -206,7 +202,7 @@ int main() {
                 cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             }
             mergeBin(cinput,n);
-        } else {
+        }*/ else {
             iinput = (int*) malloc(ROWS_SIZE * sizeof(int));
             bInt = (int*) malloc((ROWS_SIZE>>2)+1 * sizeof(int));
             cInt = (int*) malloc(ROWS_SIZE>>2 * sizeof(int));
