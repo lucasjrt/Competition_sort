@@ -185,7 +185,6 @@ int main() {
     char **cinput = (char**) malloc(ROWS_SIZE * sizeof(char*));
     cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
     if(scanf("%s", cinput[n]) != EOF) { //TODO: Alterar esse if para dentro dos whiles
-
         if(cinput[n][0] < '0' || cinput[n][0] > '9') {
             caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
             caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
@@ -196,20 +195,20 @@ int main() {
                 cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
             }
             mergeString(cinput, n);
-        } else if(ehBin(cinput[n])) {
-            caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
-            caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
-            cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
-            while(scanf("%s", cinput[n]) != EOF) {
-                caux[n] = (char*) malloc(COLS_SIZE * sizeof(char));
-                n++;
-                cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
-            }
-            mergeBin(cinput,n);
+//        } else if(ehBin(cinput[n])) {
+//            caux = (char**) malloc(ROWS_SIZE * sizeof(char*));
+//            caux[n++] = (char*) malloc(COLS_SIZE * sizeof(char));
+//            cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
+//            while(scanf("%s", cinput[n]) != EOF) {
+//                caux[n] = (char*) malloc(COLS_SIZE * sizeof(char));
+//                n++;
+//                cinput[n] = (char*) malloc(COLS_SIZE * sizeof(char));
+//            }
+//            mergeBin(cinput,n);
         } else {
             iinput = (int*) malloc(ROWS_SIZE * sizeof(int));
-            bInt = (int*) malloc((ROWS_SIZE>>2)+1 * sizeof(int));
-            cInt = (int*) malloc(ROWS_SIZE>>2 * sizeof(int));
+            bInt = (int*) malloc(((ROWS_SIZE>>1)+1) * sizeof(int));
+            cInt = (int*) malloc(((ROWS_SIZE>>1)+1) * sizeof(int));
             iinput[n] = atoi(cinput[n]);
             n++;
             while(scanf("%d", &iinput[n]) != EOF) {
@@ -218,16 +217,15 @@ int main() {
 			mergeInt(iinput, 0, n - 1);
         }
     }
-	if(caux != NULL)
+
+	if(caux != NULL) {
 		for(i = 0; i < n; i++)
 			printf("%s\n", cinput[i]);
-	else
+    	free(caux);
+	}
+	else {
 		for(i = 0; i < n; i++)
 			printf("%d\n", iinput[i]);
-
-    if(caux != NULL)
-    	free(caux);
-	else{
 		free(bInt);
 		free(cInt);
 	}
